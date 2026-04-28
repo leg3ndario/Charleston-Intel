@@ -1,0 +1,12 @@
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+supabase==2.10.0
+python-dotenv==1.0.1
+pydantic==2.9.2
+playwright==1.48.0
+beautifulsoup4==4.12.3
+requests==2.32.3
+openpyxl==3.1.5
+pdfplumber==0.11.4
+apscheduler==3.10.4
+pytest==8.3.3
