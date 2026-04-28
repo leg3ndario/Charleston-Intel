@@ -1,0 +1,91 @@
+name: Charleston County Lead Scrapers
+
+on:
+  # Run on schedule (cron format is UTC, so adjust for ET)
+  schedule:
+    # Daily fast scrapers - 10:00 UTC = 6:00 AM ET (during DST) or 5:00 AM ET
+    - cron: '0 10 * * *'
+    # Daily daybook scrapers - 11:00 UTC = 7:00 AM ET
+    - cron: '0 11 * * *'
+    # Weekly heavy scrapers - Sunday 10:30 UTC
+    - cron: '30 10 * * 0'
+    # Hourly enrichment - :15 past every hour
+    - cron: '15 * * * *'
+  
+  # Allow manual trigger from GitHub UI
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'Which job to run'
+        required: true
+        type: choice
+        options:
+          - fast
+          - daybook
+          - heavy
+          - enrich
+          - all
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          python -m playwright install --with-deps chromium
+      
+      - name: Run tests
+        run: |
+          PYTHONPATH=. python -m pytest tests/ -v
+      
+      - name: Determine job to run
+        id: job
+        run: |
+          # If manual trigger, use the selected job
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "job=${{ github.event.inputs.job }}" >> $GITHUB_OUTPUT
+          else
+            # Scheduled: figure out which job based on cron
+            HOUR=$(date -u +%H)
+            MINUTE=$(date -u +%M)
+            DAY=$(date -u +%u)  # 1-7, Monday=1, Sunday=7
+            
+            if [ "$HOUR" = "10" ] && [ "$MINUTE" = "00" ]; then
+              echo "job=fast" >> $GITHUB_OUTPUT
+            elif [ "$HOUR" = "11" ] && [ "$MINUTE" = "00" ]; then
+              echo "job=daybook" >> $GITHUB_OUTPUT
+            elif [ "$DAY" = "7" ] && [ "$HOUR" = "10" ] && [ "$MINUTE" = "30" ]; then
+              echo "job=heavy" >> $GITHUB_OUTPUT
+            else
+              echo "job=enrich" >> $GITHUB_OUTPUT
+            fi
+          fi
+      
+      - name: Run scraper job
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          PLAYWRIGHT_HEADLESS: true
+        run: |
+          PYTHONPATH=. python -m scheduler.runner ${{ steps.job.outputs.job }}
+      
+      - name: Upload logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: scraper-logs-${{ github.run_id }}
+          path: |
+            *.log
+            /tmp/playwright-*
+          retention-days: 7
