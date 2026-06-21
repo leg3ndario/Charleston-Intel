@@ -56,12 +56,12 @@ Still in Supabase browser:
 
 ### **Copy Location 2: Service Role Key (SECRET)**
 - **Find it**: Scroll down to **"Project API keys"** section
-- **Look for**: The row labeled **"`service_role`"** with a tag that says "secret"
+- **Look for**: The row labeled **"`Secret key"
 - **It looks like**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFi...` (VERY LONG, 400+ characters)
 - **Copy button**: Click the copy icon or "Reveal" then copy
 - **Paste it WHERE**: In your local file `.env` (on your computer)
   ```bash
-  SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI...
+  SUPABASE_SECRET_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI...
   ```
 - ⚠️ **THIS IS A SECRET** — Never commit this to GitHub in plain text
 - This key is for your **backend scrapers only** (has full database access)
@@ -69,10 +69,10 @@ Still in Supabase browser:
 ### **Copy Location 3: Anon Public Key (SAFE FOR BROWSER)**
 - **Find it**: Same **"Project API keys"** section
 - **Look for**: The row labeled **"`anon`"** with a tag that says "public"
-- **It looks like**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFi...` (also long, but different from service_role)
+- **It looks like**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFi...` (also long, but different from Secret key)
 - **Copy button**: Click the copy icon
 - **Paste it WHERE**: You don't need this yet, but later you can put it in the HTML dashboard if you want it to talk directly to Supabase instead of going through your API
-  - **For now**: Just skip this one. The backend scrapers + API only need the service_role key.
+  - **For now**: Just skip this one. The backend scrapers + API only need the Secret key.
 
 ---
 
@@ -83,10 +83,10 @@ After Step 3, open `charleston_backend/.env` on your computer. It should look li
 ```bash
 # Supabase credentials
 SUPABASE_URL=https://abcdefghijklmnop.supabase.co
-SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFiY2RlZmdoaWprbG1ub3AiLCJyb2xlIjoic2VydmljZV9yb2xlIiwiaWF0IjoxNjMwMDAwMDAwLCJleHAiOjE5NDU1NzYwMDB9.FAKE_KEY_EXAMPLE_PASTE_YOUR_REAL_ONE_HERE
+SUPABASE_SECRET_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFiY2RlZmdoaWprbG1ub3AiLCJyb2xlIjoic2VydmljZV9yb2xlIiwiaWF0IjoxNjMwMDAwMDAwLCJleHAiOjE5NDU1NzYwMDB9.FAKE_KEY_EXAMPLE_PASTE_YOUR_REAL_ONE_HERE
 
 # Optional (not needed yet)
-# SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+# SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 
 # Playwright settings
 PLAYWRIGHT_HEADLESS=true
@@ -109,8 +109,8 @@ After you push your code to GitHub, you'll also need to give GitHub Actions thes
    - Value: (paste the same Project URL from Step 3)
    
    **Secret #2**:
-   - Name: `SUPABASE_SERVICE_KEY`
-   - Value: (paste the same service_role key from Step 3)
+   - Name: `SUPABASE_SECRET_KEY`
+   - Value: (paste the same Secret key from Step 3)
 
 4. Click "Add secret" for each one
 
@@ -128,10 +128,10 @@ After you push your code to GitHub, you'll also need to give GitHub Actions thes
 │  │ https://abcdefg.supabase.co      [📋 Copy]   │──┐
 │  │                                               │  │
 │  │ Project API keys:                             │  │
-│  │ service_role (secret)                         │  │
+│  │ Secret key)                         │  │
 │  │ eyJhbGciOiJIUzI1NiIsInR...      [📋 Copy]   │──┼─┐
 │  │                                               │  │ │
-│  │ anon (public)                                 │  │ │
+│  │ Publishable key                                 │  │ │
 │  │ eyJhbGciOiJIUzI1NiIsInR...      [📋 Copy]   │──┼─┼─┐
 │  └───────────────────────────────────────────────┘  │ │ │
 └─────────────────────────────────────────────────────┘ │ │ │
@@ -142,8 +142,8 @@ After you push your code to GitHub, you'll also need to give GitHub Actions thes
 │  Your Computer: charleston_backend/.env             │ │ │ │
 │  ┌───────────────────────────────────────────────┐  │ │ │ │
 │  │ SUPABASE_URL=https://abcdefg.supabase.co      │←─┘ │ │
-│  │ SUPABASE_SERVICE_KEY=eyJhbGciOiJIUzI1NiIs... │←───┘ │
-│  │ # SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIs... │←─────┘
+│  │ SUPABASE_SECRET_KEY=eyJhbGciOiJIUzI1NiIs... │←───┘ │
+│  │ # SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIs... │←─────┘
 │  └───────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────┘
                                                         
@@ -155,7 +155,7 @@ After you push your code to GitHub, you'll also need to give GitHub Actions thes
 │  │ Secret: SUPABASE_URL                          │←─┐ (same value)
 │  │ Value: https://abcdefg.supabase.co            │  │
 │  │                                               │  │
-│  │ Secret: SUPABASE_SERVICE_KEY                  │←─┐ (same value)
+│  │ Secret: SUPABASE_SECRET_KEY                  │←─┐ (same value)
 │  │ Value: eyJhbGciOiJIUzI1NiIs...               │  │
 │  └───────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────┘
@@ -174,17 +174,17 @@ Both need the same values — you're just pasting them in two different places.
 
 ## Common Mistakes
 
-❌ **"I pasted the anon key instead of service_role"**  
-→ Scrapers will fail with "permission denied" errors. Use the **service_role** key (the one labeled "secret").
+❌ **"I pasted the Publishable key instead of Secret key"**  
+→ Scrapers will fail with "permission denied" errors. Use the **Secret key").
 
 ❌ **"I committed .env to GitHub"**  
-→ That's why `.gitignore` blocks it. If you accidentally pushed it, immediately rotate your keys in Supabase (Settings → API → "Roll service_role key").
+→ That's why `.gitignore` blocks it. If you accidentally pushed it, immediately rotate your keys in Supabase (Settings → API → "Roll Secret key").
 
 ❌ **"The key has a newline in the middle"**  
 → Keys are long — make sure you copied the whole thing as one line with no line breaks.
 
 ❌ **"I saved the database password but don't know where to use it"**  
-→ You only need it if you want to connect directly via `psql` or a database GUI. The scrapers don't use it — they use the service_role key.
+→ You only need it if you want to connect directly via `psql` or a database GUI. The scrapers don't use it — they use the Secret key.
 
 ---
 

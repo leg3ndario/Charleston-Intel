@@ -27,8 +27,8 @@ This guide walks you through setting up the Charleston County lead scraper to ru
 4. Go to **SQL Editor** → **New Query** → paste the contents of `db/schema.sql` → **Run**
 5. Go to **Settings → API** and copy these three values:
    - **Project URL** → save as `SUPABASE_URL`
-   - **Project API Keys → `service_role`** (secret) → save as `SUPABASE_SERVICE_KEY`
-   - **Project API Keys → `anon`** (public) → save as `SUPABASE_ANON_KEY`
+   - **Project API Keys → `Secret key) → save as `SUPABASE_SECRET_KEY`
+   - **Project API Keys → `anon`** (public) → save as `SUPABASE_PUBLISHABLE_KEY`
 
 ✅ Your database is ready.
 
@@ -57,7 +57,7 @@ git push -u origin main
 1. Go to your repo on GitHub → **Settings → Secrets and variables → Actions**
 2. Click **New repository secret** and add these two:
    - Name: `SUPABASE_URL` → Value: (paste your Project URL from step 1)
-   - Name: `SUPABASE_SERVICE_KEY` → Value: (paste your service_role key)
+   - Name: `SUPABASE_SECRET_KEY` → Value: (paste your Secret key)
 
 **Why secrets?** GitHub Actions reads these as environment variables, but they're never logged or exposed in the UI.
 
@@ -121,7 +121,7 @@ railway up
 
 # Set secrets
 railway variables set SUPABASE_URL=https://your-project.supabase.co
-railway variables set SUPABASE_SERVICE_KEY=eyJhbGciOi...
+railway variables set SUPABASE_SECRET_KEY=eyJhbGciOi...
 
 # Your API is live at: https://charleston-leads-production.up.railway.app
 ```
@@ -135,7 +135,7 @@ railway variables set SUPABASE_SERVICE_KEY=eyJhbGciOi...
    - **Start Command**: `uvicorn api.main:app --host 0.0.0.0 --port $PORT`
 4. Add environment variables:
    - `SUPABASE_URL`
-   - `SUPABASE_SERVICE_KEY`
+   - `SUPABASE_SECRET_KEY`
 5. **Create Web Service**
 
 #### Option C: Fly.io (needs Dockerfile, already included)
@@ -154,7 +154,7 @@ fly launch
 
 # Set secrets
 fly secrets set SUPABASE_URL=https://your-project.supabase.co
-fly secrets set SUPABASE_SERVICE_KEY=eyJhbGciOi...
+fly secrets set SUPABASE_SECRET_KEY=eyJhbGciOi...
 
 # Your API is live at: https://charleston-leads.fly.dev
 ```
@@ -333,7 +333,7 @@ You're nowhere near the limits — this system uses ~10 MB DB + ~50K requests/mo
 → The county portal might be down or the HTML changed. Run the scraper locally with `PLAYWRIGHT_HEADLESS=false` in `.env` to watch what it's seeing.
 
 **API returns 500 error**
-→ Check your Railway/Render/Fly logs. Likely missing `SUPABASE_SERVICE_KEY` environment variable.
+→ Check your Railway/Render/Fly logs. Likely missing `SUPABASE_SECRET_KEY` environment variable.
 
 **CORS error in dashboard**
 → Your API's CORS is open by default (`allow_origins=["*"]`). If you locked it down, add your dashboard's domain to the list in `api/main.py`.

@@ -25,8 +25,8 @@ tests/            31 unit tests (all passing)
 - Save the password somewhere safe
 - Once it's up, go to **Settings → API** and copy:
   - Project URL → `SUPABASE_URL`
-  - `service_role` secret → `SUPABASE_SERVICE_KEY` (this is the backend key, NEVER ship to a browser)
-  - `anon` public key → `SUPABASE_ANON_KEY` (safe for the dashboard)
+  - `Secret key → `SUPABASE_SECRET_KEY` (this is the backend key, NEVER ship to a browser)
+  - `anon` public key → `SUPABASE_PUBLISHABLE_KEY` (safe for the dashboard)
 
 ### 2. Run the schema
 - In Supabase, **SQL Editor → New Query**
